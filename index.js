@@ -8,27 +8,23 @@ var fullPath = path.join(__dirname, 'code-sample.ts');
 var code = fs.readFileSync(fullPath, 'utf8');
 
 var result = JSON.stringify(typescriptEslintParser.parse(code, {}), null, 4);
-console.log('typescript-eslint-parser AST result: ' + '\n' + result + '\n');
+console.log('/////////// typescript-eslint-parser AST result //////////// ' + '\n' + result + '\n');
 
-var opts = {
-  "outputFile": false,
-  "quiet": false,
-  "maxWarnings": -1,
-  "configFile": ".eslintrc"
-};
-var engine = new eslint.CLIEngine(opts);
-console.log('Running eslint on AST result:\n');
+var CLIEngine = require("eslint").CLIEngine;
+var cli = new CLIEngine({
+  envs: ["browser", "mocha"]
+});
+
+console.log('Running eslint:\n');
 
 var report;
 try {
-  report = engine.executeOnFiles(["code-sample.ts"]);
+
+  report = cli.executeOnText(code);
 } catch (err) {
-  console.log('found problem : ' + err);
+  console.log('eslint failed: ' + err);
   return false;
 }
 
-// module.exports = function () {
-// 	var typescriptEslintParser = require("typescript-eslint-parser");
-// };
 
 
